@@ -9,6 +9,13 @@
     "lib",
     "umd"
   ],
+  "keywords": [
+    "trie",
+    "phrase",
+    "word",
+    "match",
+    "stem"
+  ],
   "scripts": {
     "build": "nwb build-web-module",
     "clean": "nwb clean-module",

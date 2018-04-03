@@ -6,11 +6,46 @@ const wordRe = /\S+\w/g
 
 function Node(d) {
   this.children = new Map()
-  this.stem = d && d.stem ? d.stem : undefined
-  // end of phrase
-  //this.isEop = d && d.isEop ? true : false
-  this.phrases = d && d.phrase ? [d.phrase] : []
-  this.addPhrase = phraseNum => this.phrases.push(phraseNum)
+  if (d) {
+    this.stem = d.stem
+    this.phrases = d.phrase ? [d.phrase] : []
+    this.addPhrase = phrase => {
+      //console.log(`addPhrase ${phraseNum}`)
+      this.phrases.push(phrase)
+    }
+  }
+  this.toString = () => {
+    let result = ''
+    if (this.phrases) {
+      //result += `${this.phrases}:`
+      this.phrases.forEach((phrase, i) => {
+        const word = phrase[0] ? phrase[0] : ''
+        const eop = phrase[1] ? '*' : ''
+        const sep = this.phrases.length - 1 === i ? ':' : ','
+        result += `${word}${eop}${sep}`
+      })
+    }
+    if (this.stem) {
+      result += `${this.stem}`
+    }
+    if (this.children.size > 0) {
+      result += `{`
+
+      for (let node of this.children.values()) {
+        result += `${node.stem}|`
+      }
+      result = result
+        .split('')
+        .reverse()
+        .slice(1)
+        .reverse()
+        .join('')
+      //result += this.children.size
+
+      result += `}`
+    }
+    return result
+  }
 }
 
 export default function Trie() {
@@ -22,7 +57,6 @@ export default function Trie() {
     const phrases = string.match(phraseRe)
     phrases.forEach((phrase, pi) => {
       this.phraseCount += 1
-      //console.log(`phrase ${this.phraseCount}`)
       // break phrase into words
       const words = phrase.match(wordRe)
       // loop through phrase words
@@ -32,35 +66,41 @@ export default function Trie() {
         word = word.toLowerCase()
         // get stem
         const stem = stemPorter(word)
-        console.log(
-          `${this.phraseCount}${wi === words.length - 1 ? '*' : ''}:${stem}`
-        )
         // end of phrase detection
-        //let isEop = false
-        //if (pi === phrases.length - 1) isEop = true
+        let isEop = false
+        if (wi === words.length - 1) isEop = true
+        let phrase = [this.phraseCount, isEop]
         // create node
         const node = new Node({
-          //isEop,
           stem,
-          phrase: this.phraseCount,
+          phrase,
         })
-        // push stem to each root child
-        for (let val of this.root.children.values()) {
-          if (!val.children.get(stem)) d.set(stem, node)
-        }
-        // push stem to root
-        if (this.root.children.get(stem)) this.root.children.set(stem, node)
+
+        // TODO add node to parent
+
+        // push node to root
+        let existing = this.root.children.get(stem)
+        if (!existing) this.root.children.set(stem, node)
+        else existing.addPhrase(phrase)
       })
     })
     return this
   }
 
   this.toString = () => {
-    /* 1 1,2:ever/3:been/4*,5:eaten/6:i
-      * 2 1,2:been/3*:store/5*:yet/6:don't
-      * 3 1*:mars/2*:amsterdam
-      * 4 6*:hands
-      */
+    /* adding each phrase:
+     * - have you ever been to mars?
+     * - have you ever been to amsterdam?
+     * - have you been to the store?
+     * - have you eaten?
+     * - have you eaten yet?
+     * - i don't know what to do with my hands
+     * creates the following trie:
+     * 1 1,2:ever/3:been/4*,5:eaten/6:i
+     * 2 1,2:been/3*:store/5*:yet/6:don't
+     * 3 1*:mars/2*:amsterdam
+     * 4 6*:hands
+     */
     let str = ''
     for (let val of this.root.children.values()) {
       str += `|${val.word}`
