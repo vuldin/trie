@@ -51,24 +51,25 @@ export default function Trie() {
     const isEop = stems.length > 0 ? false : true
     let phrase = [this.phraseCount, isEop]
     // create node
-    const node = new Node({ stem, phrase })
-    //console.log(stem)
-    //console.log('parent', parent.stem, parent.children.size)
+    let node = new Node({ stem, phrase })
+
     // add node to parent
-    const pCopy = parent.children.get(stem)
-    if (!pCopy) {
-      //console.log(`  parent not found`)
-      parent.children.set(stem, node)
-    } else {
-      pCopy.phrases.set(phrase[0], phrase[1])
+    const padd = (n, itr) => {
+      for (let c of itr.values()) {
+        if (c.phrases.has(phrase[0])) {
+          padd(n, c.children)
+          c.children.set(stem, n)
+        }
+      }
     }
+    padd(node, this.root.children)
+
     // push node to root
     let rCopy = this.root.children.get(stem)
-    if (!rCopy) {
-      //console.log(`  not on root`)
-      this.root.children.set(stem, node)
-    } else {
+    if (!rCopy) this.root.children.set(stem, node)
+    else {
       rCopy.phrases.set(phrase[0], phrase[1])
+      node = rCopy
     }
     // loop
     if (stems.length > 0) result = add(stems, node)
@@ -88,7 +89,8 @@ export default function Trie() {
         .reverse()
 
       // start add loop
-      this.root = add(stems, this.root)
+      //this.root = add(stems, this.root)
+      add(stems, this.root)
     })
     return this
   }

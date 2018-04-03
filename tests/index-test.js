@@ -10,18 +10,12 @@ describe('Trie tests', () => {
   it('can add a word', () => {
     const str = 'word'
     const node = trie.add(str).root.children.get(str)
-    //console.log(node.toString())
     expect(trie.root.children.size).toEqual(1)
     expect(node.phrases.get(1)).toEqual(true)
   })
-  it('can add multiple words', () => {
+  it('can add two words', () => {
     const str = 'word #2'
     trie.add(str)
-    /*
-    for (let node of children.values()) {
-      console.log(node.toString())
-    }
-    */
   })
   it('has two children due to duplicate word', () => {
     expect(children.size).toEqual(2)
@@ -40,13 +34,20 @@ describe('Trie tests', () => {
   })
   it('can chain from add function', () => {
     expect(trie.add('word #3').add('word #4') instanceof Trie).toEqual(true)
+  })
+  it('root:word node contains three children', () => {
+    expect(children.get('word').children.size).toEqual(3)
+  })
+  it('should handle any multi-word phrase', () => {
+    const str = 'this is a longer sentence'
+    trie.add(str)
     /*
-    for (let node of children.values()) {
+    for (let node of children.get('is').children.values()) {
       console.log(node.toString())
     }
     */
-  })
-  xit('root:word node contains three children', () => {
-    expect(children.get('word').children.size).toEqual(3)
+    expect(children.size).toEqual(7)
+    expect(children.get('is').children.size).toEqual(2)
+    expect(children.get('is').children.get('longer')).toNotBe(undefined)
   })
 })
