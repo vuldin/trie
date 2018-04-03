@@ -4,6 +4,7 @@ import Trie from 'src/index'
 describe('Trie tests', () => {
   const trie = new Trie()
   const children = trie.root.children
+  const phrase = 'this is a longer sentence'
   it('instantiates', () => {
     expect(trie instanceof Trie).toEqual(true)
   })
@@ -38,9 +39,8 @@ describe('Trie tests', () => {
   it('root:word node contains three children', () => {
     expect(children.get('word').children.size).toEqual(3)
   })
-  it('should handle any multi-word phrase', () => {
-    const str = 'this is a longer sentence'
-    trie.add(str)
+  it('should handle any phrase', () => {
+    trie.add(phrase)
     /*
     for (let node of children.get('is').children.values()) {
       console.log(node.toString())
@@ -49,5 +49,15 @@ describe('Trie tests', () => {
     expect(children.size).toEqual(7)
     expect(children.get('is').children.size).toEqual(2)
     expect(children.get('is').children.get('longer')).toNotBe(undefined)
+  })
+  it('finds an exact matching word', () => {
+    const result = trie.find('word')
+    expect(result.count).toEqual(1)
+    expect(result.exact).toEqual(true)
+  })
+  it('finds an exact matching phrase', () => {
+    const result = trie.find(phrase)
+    expect(result.count).toEqual(3)
+    expect(result.exact).toEqual(true)
   })
 })

@@ -43,6 +43,7 @@ function Node(d) {
 export default function Trie() {
   this.root = new Node()
   this.phraseCount = 0
+  this.matchCount = 0
 
   const add = (stems, parent) => {
     let result = parent
@@ -76,23 +77,48 @@ export default function Trie() {
     return result
   }
 
+  const parse = str => {
+    return str
+      .match(wordRe)
+      .filter(word => !common.map(d => d.word).includes(word))
+      .map(d => stemPorter(d.toLowerCase()))
+      .reverse()
+  }
+
   this.add = string => {
     // break string into phrases
     const phrases = string.match(phraseRe)
     phrases.forEach((phrase, pi) => {
       this.phraseCount += 1
       // phrase to words
-      const stems = phrase
-        .match(wordRe)
-        .filter(word => !common.map(d => d.word).includes(word))
-        .map(d => stemPorter(d.toLowerCase()))
-        .reverse()
-
+      const stems = parse(phrase)
       // start add loop
-      //this.root = add(stems, this.root)
       add(stems, this.root)
     })
     return this
+  }
+
+  const find = (stems, itr) => {
+    const s = stems.pop()
+    const n = itr.get(s)
+    if (n) {
+      this.matchCount += 1
+      if (n.children) find(stems, n.children)
+    }
+  }
+
+  this.find = phrase => {
+    this.matchCount = 0
+    let result = false
+    const stems = parse(phrase)
+    find(stems, this.root.children)
+    if (this.matchCount > 0) {
+      result = {
+        count: this.matchCount,
+        exact: parse(phrase).length === this.matchCount,
+      }
+    }
+    return result
   }
 
   this.toString = () => {
