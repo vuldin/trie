@@ -8,26 +8,18 @@ function Node(d) {
   this.children = new Map()
   if (d) {
     this.stem = d.stem
-    this.phrases = d.phrase ? [d.phrase] : []
-    this.addPhrase = phrase => {
-      //console.log(`addPhrase ${phraseNum}`)
-      this.phrases.push(phrase)
-    }
+    this.phrases = new Map()
+    if (d.phrase) this.phrases.set(d.phrase[0], d.phrase[1])
   }
   this.toString = () => {
     let result = ''
-    if (this.phrases) {
-      //result += `${this.phrases}:`
-      this.phrases.forEach((phrase, i) => {
-        const word = phrase[0] ? phrase[0] : ''
-        const eop = phrase[1] ? '*' : ''
-        const sep = this.phrases.length - 1 === i ? ':' : ','
-        result += `${word}${eop}${sep}`
-      })
+    let count = 1
+    for (let [num, eop] of this.phrases.entries()) {
+      const sep = this.phrases.size === count ? ':' : ','
+      result += `${num}${eop ? '*' : ''}${sep}`
+      count += 1
     }
-    if (this.stem) {
-      result += `${this.stem}`
-    }
+    if (this.stem) result += `${this.stem}`
     if (this.children.size > 0) {
       result += `{`
 
@@ -52,37 +44,51 @@ export default function Trie() {
   this.root = new Node()
   this.phraseCount = 0
 
+  const add = (stems, parent) => {
+    let result = parent
+    const stem = stems.pop()
+    // end of phrase detection
+    const isEop = stems.length > 0 ? false : true
+    let phrase = [this.phraseCount, isEop]
+    // create node
+    const node = new Node({ stem, phrase })
+    //console.log(stem)
+    //console.log('parent', parent.stem, parent.children.size)
+    // add node to parent
+    const pCopy = parent.children.get(stem)
+    if (!pCopy) {
+      //console.log(`  parent not found`)
+      parent.children.set(stem, node)
+    } else {
+      pCopy.phrases.set(phrase[0], phrase[1])
+    }
+    // push node to root
+    let rCopy = this.root.children.get(stem)
+    if (!rCopy) {
+      //console.log(`  not on root`)
+      this.root.children.set(stem, node)
+    } else {
+      rCopy.phrases.set(phrase[0], phrase[1])
+    }
+    // loop
+    if (stems.length > 0) result = add(stems, node)
+    return result
+  }
+
   this.add = string => {
     // break string into phrases
     const phrases = string.match(phraseRe)
     phrases.forEach((phrase, pi) => {
       this.phraseCount += 1
-      // break phrase into words
-      const words = phrase.match(wordRe)
-      // loop through phrase words
-      words.forEach((word, wi) => {
-        // skip on common words
-        if (common.map(d => d.word).includes(word)) return
-        word = word.toLowerCase()
-        // get stem
-        const stem = stemPorter(word)
-        // end of phrase detection
-        let isEop = false
-        if (wi === words.length - 1) isEop = true
-        let phrase = [this.phraseCount, isEop]
-        // create node
-        const node = new Node({
-          stem,
-          phrase,
-        })
+      // phrase to words
+      const stems = phrase
+        .match(wordRe)
+        .filter(word => !common.map(d => d.word).includes(word))
+        .map(d => stemPorter(d.toLowerCase()))
+        .reverse()
 
-        // TODO add node to parent
-
-        // push node to root
-        let existing = this.root.children.get(stem)
-        if (!existing) this.root.children.set(stem, node)
-        else existing.addPhrase(phrase)
-      })
+      // start add loop
+      this.root = add(stems, this.root)
     })
     return this
   }
