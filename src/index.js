@@ -32,8 +32,6 @@ function Node(d) {
         .slice(1)
         .reverse()
         .join('')
-      //result += this.children.size
-
       result += `}`
     }
     return result
@@ -53,11 +51,10 @@ export default function Trie() {
     let phrase = [this.phraseCount, isEop]
     // create node
     let node = new Node({ stem, phrase })
-
-    // add node to parent
+    // add node to parents
     const padd = (n, itr) => {
       for (let c of itr.values()) {
-        if (c.phrases.has(phrase[0])) {
+        if (c.phrases.has(phrase[0]) && c.stem !== n.stem) {
           padd(n, c.children)
           c.children.set(stem, n)
         }
@@ -67,8 +64,9 @@ export default function Trie() {
 
     // push node to root
     let rCopy = this.root.children.get(stem)
-    if (!rCopy) this.root.children.set(stem, node)
-    else {
+    if (!rCopy) {
+      this.root.children.set(stem, node)
+    } else {
       rCopy.phrases.set(phrase[0], phrase[1])
       node = rCopy
     }
@@ -119,26 +117,5 @@ export default function Trie() {
       }
     }
     return result
-  }
-
-  this.toString = () => {
-    /* adding each phrase:
-     * - have you ever been to mars?
-     * - have you ever been to amsterdam?
-     * - have you been to the store?
-     * - have you eaten?
-     * - have you eaten yet?
-     * - i don't know what to do with my hands
-     * creates the following trie:
-     * 1 1,2:ever/3:been/4*,5:eaten/6:i
-     * 2 1,2:been/3*:store/5*:yet/6:don't
-     * 3 1*:mars/2*:amsterdam
-     * 4 6*:hands
-     */
-    let str = ''
-    for (let val of this.root.children.values()) {
-      str += `|${val.word}`
-    }
-    return str
   }
 }

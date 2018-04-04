@@ -1,7 +1,7 @@
 import expect from 'expect'
 import Trie from 'src/index'
 
-describe('Trie tests', () => {
+describe('@vuldin/trie', () => {
   const trie = new Trie()
   const children = trie.root.children
   const phrase = 'this is a longer sentence'
@@ -41,14 +41,13 @@ describe('Trie tests', () => {
   })
   it('should handle any phrase', () => {
     trie.add(phrase)
-    /*
-    for (let node of children.get('is').children.values()) {
-      console.log(node.toString())
-    }
-    */
     expect(children.size).toEqual(7)
     expect(children.get('is').children.size).toEqual(2)
     expect(children.get('is').children.get('longer')).toNotBe(undefined)
+  })
+  it('should handle phrases that previously caused infinite loop', () => {
+    const phrase = 'this is a yet another test'
+    expect(trie.add(phrase) instanceof Trie).toEqual(true)
   })
   it('finds an exact matching word', () => {
     const result = trie.find('word')
@@ -59,5 +58,8 @@ describe('Trie tests', () => {
     const result = trie.find(phrase)
     expect(result.count).toEqual(3)
     expect(result.exact).toEqual(true)
+  })
+  it('will not find a non-existent phrase', () => {
+    expect(trie.find(`this phrase doesn't exist`)).toEqual(false)
   })
 })
