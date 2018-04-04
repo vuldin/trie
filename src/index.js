@@ -76,6 +76,7 @@ export default function Trie() {
   }
 
   const parse = str => {
+    if (str === undefined || str.length === 0) return
     return str
       .match(wordRe)
       .filter(word => !common.map(d => d.word).includes(word))
@@ -84,6 +85,7 @@ export default function Trie() {
   }
 
   this.add = string => {
+    if (string === undefined || string.length === 0) return this
     // break string into phrases
     const phrases = string.match(phraseRe)
     phrases.forEach((phrase, pi) => {
@@ -106,8 +108,9 @@ export default function Trie() {
   }
 
   this.find = phrase => {
-    this.matchCount = 0
     let result = false
+    if (!phrase || phrase.length === 0) return result
+    this.matchCount = 0
     const stems = parse(phrase)
     find(stems, this.root.children)
     if (this.matchCount > 0) {

@@ -49,6 +49,9 @@ describe('@vuldin/trie', () => {
     const phrase = 'this is a yet another test'
     expect(trie.add(phrase) instanceof Trie).toEqual(true)
   })
+  it('should handle adding empty strings', () => {
+    expect(trie.add() instanceof Trie).toEqual(true)
+  })
   it('finds an exact matching word', () => {
     const result = trie.find('word')
     expect(result.count).toEqual(1)
@@ -61,5 +64,8 @@ describe('@vuldin/trie', () => {
   })
   it('will not find a non-existent phrase', () => {
     expect(trie.find(`this phrase doesn't exist`)).toEqual(false)
+  })
+  it('handles finding nothing', () => {
+    expect(trie.find()).toEqual(false)
   })
 })

@@ -1,11 +1,11 @@
 {
   "name": "@vuldin/trie",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "rank text by best match of included words and phrases",
   "main": "lib/index.js",
   "module": "es/index.js",
   "files": ["es", "lib", "umd"],
-  "keywords": ["trie", "phrase", "word", "match", "stem"],
+  "keywords": ["trie", "phrase", "word", "match", "stem", "search"],
   "scripts": {
     "build": "nwb build-web-module",
     "clean": "nwb clean-module",
