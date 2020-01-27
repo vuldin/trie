@@ -1,6 +1,6 @@
 ## Prerequisites
 
-[Node.js](http://nodejs.org/) >= v4 must be installed.
+For the server, [Node.js](http://nodejs.org/) >= v13.2 must be installed.
 
 ## Installation
 

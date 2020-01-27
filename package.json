@@ -1,28 +1,80 @@
 {
   "name": "@vuldin/trie",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "rank text by best match of included words and phrases",
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "files": ["es", "lib", "umd"],
-  "keywords": ["trie", "phrase", "word", "match", "stem", "search"],
+  "files": [
+    "lib",
+    "index.mjs"
+  ],
+  "type": "commonjs",
+  "main": "./lib/index.js",
+  "exports": {
+    "import": "./index.mjs",
+    "require": "./lib/index.js"
+  },
+  "keywords": [
+    "trie",
+    "phrase",
+    "word",
+    "match",
+    "stem",
+    "search"
+  ],
   "scripts": {
-    "build": "nwb build-web-module",
-    "clean": "nwb clean-module",
-    "prepublishOnly": "npm run build",
-    "test": "nwb test",
-    "test:coverage": "nwb test --coverage",
-    "test:watch": "nwb test --server"
+    "build": "babel src/index.mjs --out-file lib/index.js && babel lib/index.js --minified --no-comments --source-maps -o lib/index.min.js",
+    "clean": "rimraf lib coverage",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "common-words": "^0.1.3",
-    "stem-porter": "0.0.1"
+    "stemmer": "^1.0.4"
   },
   "devDependencies": {
-    "nwb": "0.22.x"
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/plugin-transform-modules-commonjs": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "babel-jest": "^25.1.0",
+    "jest": "^25.1.0",
+    "rimraf": "^3.0.0"
   },
-  "author": "Joshua Purcell <vuldin@gmail.com>",
-  "homepage": "https://github.com/vuldin/trie",
+  "author": "Joshua Purcell <me@vuld.in>",
   "license": "MIT",
-  "repository": "https://github.com/vuldin/trie"
+  "repository": "https://github.com/vuldin/trie",
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
+    ],
+    "plugins": [
+      "@babel/plugin-transform-modules-commonjs"
+    ]
+  },
+  "jest": {
+    "moduleDirectories": [
+      "node_modules",
+      "lib"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "mjs"
+    ],
+    "testMatch": [
+      "**/?(*.)(spec|test).?(m)js"
+    ],
+    "transform": {
+      "^.+\\.m?js$": "babel-jest"
+    }
+  },
+  "volta": {
+    "node": "13.7.0"
+  }
 }

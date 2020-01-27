@@ -1,11 +1,7 @@
 # @vuldin/trie
 
-[![Travis][build-badge]][build]
-[![npm package][npm-badge]][npm]
-[![Coveralls][coveralls-badge]][coveralls]
-
 A trie implementation with a focus on matching phrases.
-This package is available in es/cjs/umd modules.
+This package is available in ES and CommonJS modules.
 Add it to an existing project via `npm`:
 
 ```
@@ -57,10 +53,3 @@ trie.find('test sentence') // { count: 2, exact: true }
 // common words are ignored
 trie.find('test a sentence') // same result
 ```
-
-[build-badge]: https://img.shields.io/travis/user/repo/master.png?style=flat-square
-[build]: https://travis-ci.org/user/repo
-[npm-badge]: https://img.shields.io/npm/v/npm-package.png?style=flat-square
-[npm]: https://www.npmjs.org/package/npm-package
-[coveralls-badge]: https://img.shields.io/coveralls/user/repo/master.png?style=flat-square
-[coveralls]: https://coveralls.io/github/user/repo
