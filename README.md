@@ -8,15 +8,54 @@ Add it to an existing project via `npm`:
 npm i @vuldin/trie
 ```
 
+## Why?
+
+Keep in mind that this library is an excuse for me to mess with trie data structure more than anything.
+For more info, see the [wiki](https://en.wikipedia.org/wiki/Trie) and other articles such as [this](https://medium.com/basecs/trying-to-understand-tries-3ec6bede0014).
+Most trie implementations focus on each node being a letter in a word.
+
+But nodes in this library are word stems instead.
+Word stems are used in place of the actual words to enable matches on similarity and intent (ie. `jumps` is treated the same as `jump`)
+Common words are also removed from phrases, both when added and finding phrases in the trie dataset.
+This concept could be expanded upon to eventually be the basis for a search engine, but at the moment it is very much a WIP.
+
 ## Usage
 
-Using this library consists of instantiating, then adding any number of words or phrases with the `add` function.
-This function takes a single word, sentences, or paragraphs and creates a trie data structure that is a somewhat different than most other implementations.
+The first step is to instantiate the trie:
+
+```
+import Trie from '@vuldin/trie'
+// or
+const Trie = require('@vuldin/trie')
+
+const trie = new Trie()
+```
+
+Then `trie` can be used to add phrases. The API is flexible, allowing for single words, multiple phrases, and chaining:
+
+```
+trie.add('Hello.')
+trie.add('Here is a test sentence that contains some common words in English.')
+trie.add('Strings can. Contain multiple sentences.')
+trie.add('add function calls').add('can be chained')
+```
+
+Once the dataset is ready, you can search it with `find`:
+
+```
+// finding a phrase
+trie.find('test sentence')   // { count: 2, exact: true }
+// common words are ignored
+trie.find('test a sentence') // { count: 2, exact: true }
+```
+
+The `find` result is very basic at the moment.
+But in this current state, the count can be used to show the user how relevant a given dataset is to the given phrase.
 
 ### Parsing text
 
 Strings sent to this library (whether during intial data structure creation or during lookup) go through several parsing steps.
-First the string is broken up into phrases or sentences.
+First the string is broken up into phrases/sentences.
 Then each sentence is stripped of all common words.
 Remaining uncommon words are finally converted to their stem form to remove any differences during later comparisons that relate to tense or plural forms.
 The lower case version of these stems are then used to generate the data structure (details on this data structure below).
@@ -39,17 +78,4 @@ But since we also want to match on any (uncommon) word, each of these words is a
 This means that each node is added to the trie the same number of times as the place it holds in the array.
 The tradeoff is that we create a larger data structure but have a more functional lookup (by any uncommon word or phrase).
 
-### API
-
-```
-const Trie = require('@vuldin/trie')
-const trie = new Trie()
-trie.add('Here is a test sentence that contains some common words in English.')
-trie.add('Strings can. Contain multiple sentences.')
-trie.add('add function calls').add('can be chained')
-
-// finding phrases
-trie.find('test sentence') // { count: 2, exact: true }
-// common words are ignored
-trie.find('test a sentence') // same result
-```
+**An example of this behaviour will be added soon**
