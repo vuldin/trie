@@ -1,7 +1,7 @@
 import common from "common-words";
 import stemmer from "stemmer";
-import Node from "./node";
-import { phraseRe, wordRe } from "./constants";
+import Node from "./node.mjs";
+import { phraseRe, wordRe } from "./constants.mjs";
 
 export default function Trie() {
   this.root = new Node();

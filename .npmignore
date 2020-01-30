@@ -1,3 +1,4 @@
+src/
 coverage/
-test/
 node_modules/
+vuldin-trie-*.tgz

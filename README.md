@@ -17,7 +17,9 @@ Most trie implementations focus on each node being a letter in a word.
 But nodes in this library are word stems instead.
 Word stems are used in place of the actual words to enable matches on similarity and intent (ie. `jumps` is treated the same as `jump`)
 Common words are also removed from phrases, both when added and finding phrases in the trie dataset.
-This concept could be expanded upon to eventually be the basis for a search engine, but at the moment it is very much a WIP.
+
+This concept could be expanded upon to eventually be apart of a search tool.
+Phrases could be matched to the text a user enters, and these phrases could be recommended and/or used for autocomplete or typeahead.
 
 ## Usage
 
@@ -78,4 +80,4 @@ But since we also want to match on any (uncommon) word, each of these words is a
 This means that each node is added to the trie the same number of times as the place it holds in the array.
 The tradeoff is that we create a larger data structure but have a more functional lookup (by any uncommon word or phrase).
 
-**An example of this behaviour will be added soon**
+**A visual example of this behaviour will be added soon**
