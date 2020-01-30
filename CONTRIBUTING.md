@@ -1,6 +1,7 @@
 ## Prerequisites
 
 For the server, [Node.js](http://nodejs.org/) >= v13.2 must be installed.
+If you are using [volta](https://volta.sh/), a suitable node version will be used automatically.
 
 ## Installation
 

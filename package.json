@@ -23,17 +23,31 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "clean": "rimraf dist coverage",
-    "test": "jest",
+    "clean": "rimraf dist coverage vuldin-trie-*.tgz",
+    "size": "size-limit",
+    "test": "jest && npm run size",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"
   },
+  "size-limit": [
+    {
+      "name": "CJS",
+      "path": "dist/cjs/index.min.js",
+      "limit": "1.8 KB"
+    },
+    {
+      "name": "ESM",
+      "path": "dist/esm/index.min.mjs",
+      "limit": "1.8 KB"
+    }
+  ],
   "devDependencies": {
     "@babel/core": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
     "@rollup/plugin-commonjs": "^11.0.1",
     "@rollup/plugin-json": "^4.0.1",
     "@rollup/plugin-node-resolve": "^7.0.0",
+    "@size-limit/preset-small-lib": "^3.0.0",
     "babel-jest": "^25.1.0",
     "common-words": "^0.1.3",
     "jest": "^25.1.0",
