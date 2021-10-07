@@ -1,3 +1,3 @@
-import Trie from "./trie.mjs";
+import Trie from './trie.mjs'
 
-export default Trie;
+export default Trie
