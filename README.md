@@ -1,7 +1,7 @@
 # @vuldin/trie
 
 A trie implementation with a focus on matching phrases.
-This package is available in ES and CommonJS modules.
+This package is available as an ES and CommonJS module.
 Add it to an existing project via `npm`:
 
 ```
@@ -12,11 +12,11 @@ npm i @vuldin/trie
 
 Keep in mind that this library is an excuse for me to mess with trie data structure more than anything.
 For more info, see the [wiki](https://en.wikipedia.org/wiki/Trie) and other articles such as [this](https://medium.com/basecs/trying-to-understand-tries-3ec6bede0014).
-Most trie implementations focus on each node being a letter in a word.
 
+Most trie implementations focus on each node being a letter in a word.
 But nodes in this library are word stems instead.
 Word stems are used in place of the actual words to enable matches on similarity and intent (ie. `jumps` is treated the same as `jump`)
-Common words are also removed from phrases, both when added and finding phrases in the trie dataset.
+Common words are also removed from phrases, both when adding and finding phrases in the trie dataset.
 
 This concept could be expanded upon to eventually be apart of a search tool.
 Phrases could be matched to the text a user enters, and these phrases could be recommended and/or used for autocomplete or typeahead.
