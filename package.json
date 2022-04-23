@@ -25,7 +25,7 @@
     "build": "rollup -c",
     "clean": "rimraf dist coverage vuldin-trie-*.tgz",
     "size": "size-limit",
-    "test": "jest && npm run size",
+    "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"
   },

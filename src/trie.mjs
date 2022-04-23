@@ -87,4 +87,8 @@ export default function Trie() {
     }
     return result
   }
+
+  this.getChildren = () => {
+    return this.root.children
+  }
 }
